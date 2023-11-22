@@ -18,9 +18,6 @@ from jax.lax import scan
 from functools import partial
 from utilities_2D import *
 
-%matplotlib inline
-%config InlineBackend.figure_format='retina'
-
 def main(model_name, dataset_path, train_size = None, weight = None):
     dataset_name = dataset_path.split('/')[-1][:-4]
     model, train_losses, train_data, test_data, C_train, C_test, model_data = train_run(model_name, dataset_path, train_size = train_size,  weight = weight, plot = False)
