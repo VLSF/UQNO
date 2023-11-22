@@ -8,7 +8,6 @@ import argparse
 import jax.numpy as jnp
 import numpy as np
 import equinox as eqx
-import matplotlib.pyplot as plt
 
 from jax.nn import relu
 from architectures import DilResNet, fSNO, ChebNO, UNet
