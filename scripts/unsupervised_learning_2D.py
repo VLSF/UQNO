@@ -30,7 +30,7 @@ def main(model_name, dataset_path, train_size = None, weight = None):
     if train_size != None:
         path = f'./experiments_2D/{train_size}'
     else:
-        path = f'./experiments_2D/{N_train}'
+        path = f'./experiments_2D/'
     calculation_of_metrics(model, train_data, test_data, C_train, C_test, train_losses, model_data, path, dataset_name, weight)
     
     print(f'Done for {model_name}, {dataset_name}')
