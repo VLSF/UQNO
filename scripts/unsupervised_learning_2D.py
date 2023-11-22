@@ -52,9 +52,9 @@ if __name__ == "__main__":
     
     datasets = [
                 f'datasets/{1}dataset.npz',
-                f'datasets/{3}dataset.npz', 
-                f'dataset/{4}dataset.npz',
-                f'dataset/{6}dataset.npz'
+                f'datasets/{2}dataset.npz', 
+                f'dataset/{3}dataset.npz',
+                f'dataset/{4}dataset.npz'
                ]
     
     train_size = args.trsize
