@@ -116,11 +116,6 @@ def compute_energy(a, b, u1, u2):
 def compute_energy_relative(a, b, u1, u2):
     return compute_energy(a, b, u1, u2) / jnp.sqrt(energy_norm_a((u1), a) + energy_norm_b((u1), b))
 
-
-# -
-
-# ## Models
-
 def get_DilResNet(features_train, key):
     input = features_train[0]
     D = len(input.shape[1:])
@@ -151,7 +146,6 @@ def get_DilResNet(features_train, key):
     }
     
     return model_data, optimization_specification
-
 
 def get_ChebNO(features_train, key):
     input = features_train[0]
@@ -186,7 +180,6 @@ def get_ChebNO(features_train, key):
     }
     
     return model_data, optimization_specification
-
 
 def get_SNO(features_train, key):
     input = features_train[0]
@@ -241,7 +234,6 @@ def get_SNO(features_train, key):
         "batch_size": batch_size
     }
     return model_data, optimization_specification
-
 
 def get_UNet(features_train, key):
     input = features_train[0]
@@ -302,7 +294,6 @@ def batch_generator(x, c, batch_size, key, shuffle=True):
 
         yield x, c
 
-
 def train_on_epoch(train_generator, model, optimizer, opt_state, make_step, weight):
     epoch_loss = []
     for it, (batch_of_x, batch_of_c) in enumerate(train_generator):
@@ -349,7 +340,6 @@ def train_model(model_data, train_data, C, optimization_specification, weight, p
             
     return model, train_losses
 
-
 def train_run(model_name, dataset_path, train_size = None, weight = None, plot = True):
     dataset = jnp.load(dataset_path)
     features, targets = dataset["features"], dataset['exact_sol']
@@ -395,7 +385,6 @@ def train_run(model_name, dataset_path, train_size = None, weight = None, plot =
     
     return model, train_losses, [features_train, targets_train], [features_test, targets_test], C_train, C_test, model_data
 
-
 def test_model(model, train_data, test_data, model_data):
     a, b, f = train_data[0][:, :3], train_data[0][:, 3], train_data[0][:, 4]
     ouput = jnp.zeros(train_data[1].shape)
@@ -416,7 +405,6 @@ def test_model(model, train_data, test_data, model_data):
     test_errors = vmap(compute_energy, in_axes=(0, 0, 0, 0))(a, b, test_data[1], ouput)
     
     return train_errors, test_errors
-
 
 def final_upper_bound(model, train_data, test_data, C_train, C_test, model_data):
     a, b, f = train_data[0][:, :3], train_data[0][:, 3], train_data[0][:, 4]
