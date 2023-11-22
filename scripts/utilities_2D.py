@@ -10,10 +10,8 @@ import numpy as np
 import equinox as eqx
 import matplotlib.pyplot as plt
 
-sys.path.append('architectures')
-
 from jax.nn import relu, leaky_relu, hard_tanh, gelu
-from nD import DilResNet, fSNO, UNet, ChebNO
+from architectures import DilResNet, fSNO, UNet, ChebNO
 from tqdm import tqdm
 from IPython import display
 from jax import config, random, grad, jit, hessian, vmap
