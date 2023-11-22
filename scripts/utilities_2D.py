@@ -1,7 +1,6 @@
 import warnings
 warnings.filterwarnings('ignore')
 
-# +
 import jax
 import optax
 import os, sys
@@ -23,14 +22,9 @@ from jax.lax import scan
 from functools import partial
 from transforms import integrals_and_derivatives as int_diff
 
-# %matplotlib inline
-# %config InlineBackend.figure_format='retina'
-# -
+%matplotlib inline
+%config InlineBackend.figure_format='retina'
 
-# ## Upper Bound 
-#
-
-# +
 def energy_norm_a(u, a):
     # computes ||u||_a^2 with b = 0
     h = 1 / u.shape[-1]
