@@ -8,13 +8,11 @@ import cloudpickle
 import jax.numpy as jnp
 import numpy as np
 import equinox as eqx
-import matplotlib.pyplot as plt
 
 from jax.nn import relu, leaky_relu, hard_tanh, gelu
 from architectures import DilResNet, fSNO, UNet, ChebNO
 from tqdm import tqdm
-from IPython import display
-from jax import config, random, grad, jit, hessian, vmap
+from jax import config, random, grad, jit, vmap
 from transforms import utilities, cheb
 from jax.lax import scan
 from functools import partial
@@ -276,9 +274,6 @@ def get_UNet(features_train, key):
     }
     return model_data, optimization_specification
 
-
-# ## Training
-
 def batch_generator(x, c, batch_size, key, shuffle=True):
     N_samples = len(x)
     list_of_indeces = jnp.linspace(0, N_samples-1, N_samples, dtype=jnp.int64)
@@ -351,25 +346,7 @@ def train_model(model_data, train_data, C, optimization_specification, weight, p
                 output = vmap(model)(train_data[0])[:, 0]
         
             energy_norm = vmap(compute_energy, in_axes=(0, 0, 0, 0))(a, b, train_data[1], output)
-            display.clear_output(wait=True)
-            fig, axes = plt.subplots(1, 4, figsize=(18, 4))
-
-            axes[0].set_title(r'Loss')
-            axes[0].set_yscale("log")
-            axes[0].plot(train_losses, color='red')
-
-            axes[1].set_title("Energy norm")
-            axes[1].set_yscale("log")
-            axes[1].plot(energy_norm, ".", color="red")
-
-            axes[2].imshow(output[101,0])
-            axes[2].set_title("Prediction")
-
-            axes[3].imshow(targets[101,0])
-            axes[3].set_title("Target")
-
-            plt.tight_layout()
-            plt.show()
+            
     return model, train_losses
 
 
