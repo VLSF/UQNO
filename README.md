@@ -1,5 +1,4 @@
 # Datasets
-Error estimate of functional type for neural operators
 
 We consider elliptic equation in the domain $\Gamma \subseteq [0, 1]^{D}$
 ```math
