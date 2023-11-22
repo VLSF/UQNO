@@ -1,7 +1,6 @@
 import warnings
 warnings.filterwarnings('ignore')
 
-# +
 import jax
 import optax
 import os, sys
@@ -11,19 +10,16 @@ import numpy as np
 import equinox as eqx
 import matplotlib.pyplot as plt
 
-sys.path.append('architectures')
-
 from jax.nn import relu
-from nD import DilResNet, fSNO, ChebNO, UNet
+from architectures import DilResNet, fSNO, ChebNO, UNet
 from jax import config, random, grad, jit, vmap
 from transforms import utilities, cheb
 from jax.lax import scan
 from functools import partial
 from utilities_2D import *
 
-# %matplotlib inline
-# %config InlineBackend.figure_format='retina'
-# -
+%matplotlib inline
+%config InlineBackend.figure_format='retina'
 
 def main(model_name, dataset_path, train_size = None, weight = None):
     dataset_name = dataset_path.split('/')[-1][:-4]
@@ -54,9 +50,9 @@ if __name__ == "__main__":
     
     datasets = [
                 f'datasets/{1}dataset.npz',
-                f'datasets/{3}dataset.npz', 
-                f'dataset/{4}dataset.npz',
-                f'dataset/{6}dataset.npz'
+                f'datasets/{2}dataset.npz', 
+                f'dataset/{3}dataset.npz',
+                f'dataset/{4}dataset.npz'
                ]
     
     train_size = args.trsize

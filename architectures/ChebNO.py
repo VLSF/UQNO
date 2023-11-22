@@ -5,7 +5,7 @@ from jax import config, random, vmap
 from jax.lax import dot_general, slice
 from jax.nn import relu
 from typing import Callable
-from architectures.nD.DilResNet import DilatedConvBlock
+from architectures.DilResNet import DilatedConvBlock
 from transforms import cheb
 
 config.update("jax_enable_x64", True)
