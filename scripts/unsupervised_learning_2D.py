@@ -1,7 +1,6 @@
 import warnings
 warnings.filterwarnings('ignore')
 
-# +
 import jax
 import optax
 import os, sys
