@@ -8,7 +8,33 @@ Scripts used for dataset generation:
 3. [Convection-diffusion equation](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/Convection_Diffusion.py)
 4. [Maxwell's equation](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/Maxwell.py)
 
-Mathematical details are available below.
+Datasets are available for download:
+1. [Diffusion equation](https://disk.yandex.ru/d/ofuDDtCXYDiDpg)
+2. [Diffusion equation in the L-shaped domain](https://disk.yandex.ru/d/2fnSN1M-CanPPw)
+3. [Convection-diffusion equation](https://disk.yandex.ru/d/ZMdRFig3KaezeQ)
+4. [Maxwell's equation](https://disk.yandex.ru/d/VsS0MrxlSPvl4g)
+
+One can download from GoogleColab / Jupyter Notebook using the following script
+
+```python
+import requests
+from urllib.parse import urlencode
+
+base_url = 'https://cloud-api.yandex.net/v1/disk/public/resources/download?'
+public_key = 'https://disk.yandex.ru/d/ofuDDtCXYDiDpg' # public link
+
+final_url = base_url + urlencode(dict(public_key=public_key))
+response = requests.get(final_url)
+download_url = response.json()['href']
+
+download_response = requests.get(download_url)
+with open('Diffusion.npz', 'wb') as f:
+    f.write(download_response.content)
+```
+
+Variable ```public_key``` above contains a ling to the Diffusion equation dataset. All datasets are ```.npz``` archives.
+
+Mathematical details are given below.
 
 ## Diffusion equation
 
