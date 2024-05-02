@@ -2,6 +2,14 @@
 
 There are four datasets: diffusion equation inside the square, diffusion equation in the L-shaped domain, convection-diffusion equation, Maxwell's equation.
 
+Scripts used for dataset generation:
+1. [Diffusion equation](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/Diffusion.py) 
+2. [Diffusion equation in the L-shaped domain](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/L_shaped.py)
+3. [Convection-diffusion equation](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/Convection_Diffusion.py)
+4. [Maxwell's equation](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/Maxwell.py)
+
+Mathematical details are available below.
+
 ## Diffusion equation
 
 Here we convider stationary diffusion equation in the conservative form
