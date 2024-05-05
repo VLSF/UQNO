@@ -304,6 +304,6 @@ if __name__ == "__main__":
         std_test_energy_norm = jnp.sqrt(jnp.var(energy_norms[N_train:]))
         final_loss = loss[-1]
         
-        res = f"{sigma},{N_updates},{Nx},{N_batch},{N_drop},{N_modes},{N_layers},{learning_rate},{gamma},{N_h_features},{mean_train_relative_error},{std_train_relative_error},{mean_train_energy_norm},{std_train_energy_norm},{mean_test_relative_error},{std_test_relative_error},{mean_test_energy_norm},{std_test_energy_norm},{final_loss},{mean_train_upper_bound},{std_train_upper_bound},{mean_test_upper_bound},{std_test_upper_bound},{training_time}"
+        res = f"\n{sigma},{N_updates},{Nx},{N_batch},{N_drop},{N_modes},{N_layers},{learning_rate},{gamma},{N_h_features},{mean_train_relative_error},{std_train_relative_error},{mean_train_energy_norm},{std_train_energy_norm},{mean_test_relative_error},{std_test_relative_error},{mean_test_energy_norm},{std_test_energy_norm},{final_loss},{mean_train_upper_bound},{std_train_upper_bound},{mean_test_upper_bound},{std_test_upper_bound},{training_time}"
         with open(results_path, "a") as f:
             f.write(res)
