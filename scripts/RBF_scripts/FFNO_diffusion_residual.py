@@ -65,7 +65,7 @@ class FFNO_RBF(eqx.Module):
         
     def __call__(self, x_point, u, x):
         values = self.FFNO_branch(u, x)
-        weights = jnp.exp(-jnp.sum((x_point.reshape(-1, 1, 1) - x)**2, axis=0) / self.sigma**2 / 2)
+        weights = jnp.exp(-jnp.sum((x_point.reshape(-1, 1, 1) - x)**2 / self.sigma**2, axis=0) / 2)
         return jnp.sum(values[0]*weights) * jnp.sin(x_point[1]*jnp.pi) * jnp.sin(x_point[0]*jnp.pi)
         
 def get_flux(model, x, features, coords_f):
