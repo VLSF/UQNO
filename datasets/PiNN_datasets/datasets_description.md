@@ -13,6 +13,7 @@ Datasets are available for download:
 2. [Diffusion equation in the L-shaped domain](https://disk.yandex.ru/d/2fnSN1M-CanPPw)
 3. [Convection-diffusion equation](https://disk.yandex.ru/d/ZMdRFig3KaezeQ)
 4. [Maxwell's equation](https://disk.yandex.ru/d/VsS0MrxlSPvl4g)
+5. Anisotropic diffusion equation: [eps = 5](https://disk.yandex.ru/d/NFWX3gKxD1rtQQ), [eps = 10](https://disk.yandex.ru/d/YMh9PwMqT-r57Q), [eps = 15](https://disk.yandex.ru/d/s127Q9V_P0c4Mg), [eps = 20](https://disk.yandex.ru/d/Ye8aXLLiF2ZsfA)
 
 One can download from GoogleColab / Jupyter Notebook using the following script
 
