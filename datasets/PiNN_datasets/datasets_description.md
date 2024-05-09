@@ -159,3 +159,27 @@ We consider $D=2$ Maxwell's equation in the square $x, y \in (0, 1)$
 ```
 
 For that we generate scalar field $A$ from $N\left(0, \left(I - \Delta\right)^{-k}\right)$ with homogeneous Neumann boundary conditions and use it to form exact solution $E_{x} = \partial_y A,\,E_{y} = -\partial_{x} A$. Next we sample $\mu$ from the same normal distribution and use all these fields to find solenoidal $f_{x}$ and $f_{y}$. This is done below.
+
+## Anisotropic diffusion equation
+
+Similar to Diffusion equation but has additional anisotropy parameter $\epsilon$:
+
+``` math
+\begin{equation}
+  \begin{split}
+    -&\frac{\partial}{\partial x}\left(\sigma(x, y) \frac{\partial u(x, y)}{\partial x}\right) - \epsilon^2\frac{\partial}{\partial y}\left(\sigma(x, y) \frac{\partial u(x, y)}{\partial y}\right)  = f(x, y),\\
+    &u(x, 0) = u(x, 1) = u(0, y) = u(1, y) = 0,\\
+    &x, y\in(0, 1)\times(0, 1),
+  \end{split}
+\end{equation}
+```
+This parameter is also used to generate exact solution
+``` math
+\begin{equation}
+  \begin{split}
+      &\sigma = \frac{z - \min z}{\max z - \min z}, z\sim \mathcal{N}\left(0, \left(I - c\Delta\right)^{-k}\right);\\
+      &u = v\sin(\pi x)\sin(\pi y), v \sim \mathcal{N}\left(0, \left(I - c\left(\partial_x^2 + \epsilon^2\partial_y^2\right)\right)^{-k}\right),
+  \end{split}
+\end{equation}
+```
+and the source term $f(x, y)$ is generated from diffusion coefficient $\sigma(x, y)$ and the exact solution $u(x, y)$.
