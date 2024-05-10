@@ -83,6 +83,17 @@ where
 \end{equation}
 ```
 
+**Error majorant:**
+``` math
+\begin{equation}
+    \begin{split}
+        &E[u -v] = \sqrt{\int dx dy\, \sigma(x, y) \text{grad}(u(x, y) - v(x, y))\cdot \text{grad}(u(x, y) - v(x, y))}, \\
+        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) + \text{div} w(x, y)\right)^2 + \frac{1 + \beta}{\beta \sigma(x, y)}\int dx dy\,\left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)\cdot \left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)} \\
+        &C_F \leq 1 \big/\left(\inf_{x, y} \sqrt{\lambda_{\min}(a_{ij}(x))}2\pi\right).
+    \end{split}
+\end{equation}
+```
+
 ## Convection-diffusion equation
 
 For $D_x = 1$ convection-diffusion equation reads
