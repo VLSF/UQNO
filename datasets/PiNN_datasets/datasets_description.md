@@ -7,6 +7,8 @@ Scripts used for dataset generation:
 2. [Diffusion equation in the L-shaped domain](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/L_shaped.py)
 3. [Convection-diffusion equation](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/Convection_Diffusion.py)
 4. [Maxwell's equation](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/Maxwell.py)
+5. [Anisotropic diffusion equation](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/Anisotropic_diffusion.py)
+6. [Magnetostatics](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/magnetostatics.py)
 
 Datasets are available for download:
 1. [Diffusion equation](https://disk.yandex.ru/d/ofuDDtCXYDiDpg)
@@ -184,3 +186,20 @@ This parameter is also used to generate exact solution
 \end{equation}
 ```
 and the source term $f(x, y)$ is generated from diffusion coefficient $\sigma(x, y)$ and the exact solution $u(x, y)$.
+
+## Magnetostatics
+
+Equation is the same as Maxwell, but without a source term:
+
+``` math
+\begin{equation}
+  \begin{split}
+    &\frac{\partial}{\partial y}\left(\mu\left(\frac{\partial E_{y}}{\partial x} - \frac{\partial E_{x}}{\partial y}\right)\right) = f_{x},\\
+    &-\frac{\partial}{\partial x}\left(\mu\left(\frac{\partial E_{y}}{\partial x} - \frac{\partial E_{x}}{\partial y}\right)\right) = f_{y},\\
+    &\left.E_{x}\right|_{y=0} = \left.E_{x}\right|_{y=1} = 0,\\
+    &\left.E_{y}\right|_{x=0} = \left.E_{y}\right|_{x=1} = 0.
+  \end{split}
+\end{equation}
+```
+
+This equation is interesting because error majorant is quite different.
