@@ -211,7 +211,7 @@ From [Accuracy Verification Methods: Theory and Algorithms](https://www.google.r
 is bounded from above with the following error majorant
 ```math
 \begin{equation}
-    E[u - v]^2 \leq \left\|f(x, y) - v(x, y) - \text{curl}\,w(x, y)\right\|^2 + \left\|\frac{1}{\sqrt{\mu(x, y)}}\left(w(x, y) - \mu(x, y)\,\text{curl}\,v(x, y)\right)\right\|^2,
+    E[u - v] \leq \sqrt{\left\|f(x, y) - v(x, y) - \text{curl}\,w(x, y)\right\|^2 + \left\|\frac{1}{\sqrt{\mu(x, y)}}\left(w(x, y) - \mu(x, y)\,\text{curl}\,v(x, y)\right)\right\|^2},
 \end{equation}
 ```
 where $\text{curl}\,w(x, y) = e_x\partial_y w(x, y)-e_y\partial_{x} w(x, y)$ and $\text{curl}\,v(x, y) = \partial_x v_{y}(x, y) - \partial_y v_{x}(x, y)$, so we have a single scalar field $w(x, y)$ as certificate.
@@ -257,3 +257,20 @@ Equation is the same as Maxwell, but without a source term:
 ```
 
 This equation is interesting because error majorant is quite different.
+
+**Error majorant:**
+
+From [Functional a posteriori estimates for Maxwell’s equation](https://link.springer.com/article/10.1007/s10958-007-0091-8) with little adjustments we can obtain upper bound
+
+```math
+\begin{equation}
+    E[u - v] \leq \frac{1}{2\pi}\left\|f(x, y) - \text{curl}\,w(x, y)\right\|_2 + \left\|\frac{1}{\sqrt{\mu(x, y)}}\left(w(x, y) - \mu(x, y)\,\text{curl}\,v(x, y)\right)\right\|_2,
+\end{equation}
+```
+where energy norm reads
+```math
+\begin{equation}
+    E[u - v] = \sqrt{\int dx dy \mu(x, y) \left(\partial_x (u - v)_{y} - \partial_y(u-v)_{x}\right)^2},
+\end{equation}
+```
+and $\text{curl}\,w(x, y) = e_x\partial_y w(x, y)-e_y\partial_{x} w(x, y)$ and $\text{curl}\,v(x, y) = \partial_x v_{y}(x, y) - \partial_y v_{x}(x, y)$, so we have a single scalar field $w(x, y)$ as certificate.
