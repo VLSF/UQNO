@@ -98,7 +98,7 @@ where
 \begin{equation}
     \begin{split}
         &E[u -v] = \sqrt{\int dx dy\left[\text{grad}(u(x, y) - v(x, y))\cdot \text{grad}(u(x, y) - v(x, y)) + \left(b(x, y)\right)^2(u(x, y) - v(x, y))^2\right]}, \\
-        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) - \left(b(x, y)\right)^2 v(x, y) + \text{div} w(x, y)\right)^2 + \frac{1 + \beta}{\beta \sigma(x, y)}\int dx dy\,\left(\text{grad} v(x, y) - w(x, y)\right)\cdot \left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)} \\
+        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) - \left(b(x, y)\right)^2 v(x, y) + \text{div} w(x, y)\right)^2 + \frac{1 + \beta}{\beta}\int dx dy\,\left(\text{grad} v(x, y) - w(x, y)\right)\cdot \left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)} \\
         &C_F = 1 \big/2\pi.
     \end{split}
 \end{equation}
@@ -165,6 +165,21 @@ with solution
 so one can see that initial conditions decays and $u(x, t)$ approaches solution of the stationary problem.
 
 To generate a family of PDEs we are going to draw $f_{k}$ and $\psi_k$ from normal distributions $N\left(0, \left(1 + (\pi k/ L)^s\right)^{-p}\right)$ for some positive $L, s, p$.
+
+**Error majorant:**
+
+For the case $a = \text{const}$ the a poteriori error estimate can be written
+``` math
+\begin{equation}
+    \begin{split}
+        &E[u - v] = \sqrt{\int dx dt\,\text{grad}\, e(x, t) \cdot \text{grad}\, e(x, t) + \frac{1}{2} \int dx\,\left(e(x, T)\right)^2},\\
+        &E[u - v] \leq \sqrt{\int dx dt \,\left(y(x, t) - \text{grad}\,v(x, t)\right)\cdot \left(y(x, t) - \text{grad}\,v(x, t)\right)} + C_{F}\sqrt{\int dxdt\,\left(f(x, t) - \frac{\partial v(x, t)}{\partial t} - a\cdot \text{grad}\,v(x, t) + \text{div} y(x, t)\right)^2},
+    \end{split}
+\end{equation}
+```
+where $e(x, t) = u(x, t) - v(x, t)$ is the error, $v(x, t)$ approximate solution and $u(x, t)$ is the exact solution and $C = \frac{1}{\pi D_x}$, where $D_{x}$ is a number of spatial dimensions, $C_{F} = \frac{1}{\pi}$.
+
+Source: https://arxiv.org/abs/1012.5089.
 
 
 ## Maxwell's equation
