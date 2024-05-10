@@ -66,8 +66,8 @@ and the source term $f(x, y)$ is generated from diffusion coefficient $\sigma(x,
 ``` math
 \begin{equation}
     \begin{split}
-        &E[u -v] = \sqrt{\int dx dy\, \sigma(x, y) \text{grad}(u(x, y) - v(x, y))\cdot \text{grad}(u(x, y) - v(x, y))}, \\
-        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) + \text{div} w(x, y)\right)^2 + \frac{1 + \beta}{\beta \sigma(x, y)}\int dx dy\,\left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)\cdot \left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)} \\
+        &E[u -v] = \sqrt{\int dx dy\, \sigma(x, y) \text{grad}\,(u(x, y) - v(x, y))\cdot \text{grad}\,(u(x, y) - v(x, y))}, \\
+        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) + \text{div}\,w(x, y)\right)^2 + \frac{1 + \beta}{\beta \sigma(x, y)}\int dx dy\,\left(\sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)\cdot \left(\sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)} \\
         &C_F = 1 \big/\left(\inf_{x, y} 2\pi\sqrt{\sigma(x, y)}\right).
     \end{split}
 \end{equation}
@@ -97,8 +97,8 @@ where
 ``` math
 \begin{equation}
     \begin{split}
-        &E[u -v] = \sqrt{\int dx dy\left[\text{grad}(u(x, y) - v(x, y))\cdot \text{grad}(u(x, y) - v(x, y)) + \left(b(x, y)\right)^2(u(x, y) - v(x, y))^2\right]}, \\
-        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) - \left(b(x, y)\right)^2 v(x, y) + \text{div} w(x, y)\right)^2 + \frac{1 + \beta}{\beta}\int dx dy\,\left(\text{grad} v(x, y) - w(x, y)\right)\cdot \left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)} \\
+        &E[u -v] = \sqrt{\int dx dy\left[\text{grad}\,(u(x, y) - v(x, y))\cdot \text{grad}\,(u(x, y) - v(x, y)) + \left(b(x, y)\right)^2(u(x, y) - v(x, y))^2\right]}, \\
+        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) - \left(b(x, y)\right)^2 v(x, y) + \text{div}\,w(x, y)\right)^2 + \frac{1 + \beta}{\beta}\int dx dy\,\left(\text{grad}\,v(x, y) - w(x, y)\right)\cdot \left(\sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)} \\
         &C_F = 1 \big/2\pi.
     \end{split}
 \end{equation}
@@ -173,7 +173,7 @@ For the case $a = \text{const}$ the a poteriori error estimate can be written
 \begin{equation}
     \begin{split}
         &E[u - v] = \sqrt{\int dx dt\,\text{grad}\, e(x, t) \cdot \text{grad}\, e(x, t) + \frac{1}{2} \int dx\,\left(e(x, T)\right)^2},\\
-        &E[u - v] \leq \sqrt{\int dx dt \,\left(y(x, t) - \text{grad}\,v(x, t)\right)\cdot \left(y(x, t) - \text{grad}\,v(x, t)\right)} + C_{F}\sqrt{\int dxdt\,\left(f(x, t) - \frac{\partial v(x, t)}{\partial t} - a\cdot \text{grad}\,v(x, t) + \text{div} y(x, t)\right)^2},
+        &E[u - v] \leq \sqrt{\int dx dt \,\left(y(x, t) - \text{grad}\,v(x, t)\right)\cdot \left(y(x, t) - \text{grad}\,v(x, t)\right)} + C_{F}\sqrt{\int dxdt\,\left(f(x, t) - \frac{\partial v(x, t)}{\partial t} - a\cdot \text{grad}\,v(x, t) + \text{div}\,y(x, t)\right)^2},
     \end{split}
 \end{equation}
 ```
@@ -198,6 +198,24 @@ We consider $D=2$ Maxwell's equation in the square $x, y \in (0, 1)$
 ```
 
 For that we generate scalar field $A$ from $N\left(0, \left(I - \Delta\right)^{-k}\right)$ with homogeneous Neumann boundary conditions and use it to form exact solution $E_{x} = \partial_y A,\,E_{y} = -\partial_{x} A$. Next we sample $\mu$ from the same normal distribution and use all these fields to find solenoidal $f_{x}$ and $f_{y}$. This is done below.
+
+**Error majorant:**
+
+From [Accuracy Verification Methods: Theory and Algorithms](https://www.google.ru/books/edition/Accuracy_Verification_Methods/EFvFBAAAQBAJ?hl=en&gbpv=1&dq=Mali+repin+accuracy+verification&printsec=frontcover) (page 134, Section 4.3.1 onward) we know that the energy norm
+
+```math
+\begin{equation}
+    \left(E[u - v]\right) = \sqrt{\int dxdy \left(\mu(x, y) \left(\partial_x (u(x, y) - v(x, y))_{y} - \partial_y(u(x, y)-v(x, y))_{x}\right)^2 + (u_x(x, y) - v_x(x, y))^2 + (u_y(x, y) - v_y(x, y))^2\right)},
+\end{equation}
+```
+is bounded from above with the following error majorant
+```math
+\begin{equation}
+    E[u - v]^2 \leq \left\|f(x, y) - v(x, y) - \text{curl}\,w(x, y)\right\|^2 + \left\|\frac{1}{\sqrt{\mu(x, y)}}\left(w(x, y) - \mu(x, y)\,\text{curl}\,v(x, y)\right)\right\|^2,
+\end{equation}
+```
+where $\text{curl}\,w(x, y) = e_x\partial_y w(x, y)-e_y\partial_{x} w(x, y)$ and $\text{curl}\,v(x, y) = \partial_x v_{y}(x, y) - \partial_y v_{x}(x, y)$, so we have a single scalar field $w(x, y)$ as certificate.
+
 
 ## Anisotropic diffusion equation
 
