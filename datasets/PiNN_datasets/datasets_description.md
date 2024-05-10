@@ -62,6 +62,17 @@ where
 ```
 and the source term $f(x, y)$ is generated from diffusion coefficient $\sigma(x, y)$ and the exact solution $u(x, y)$.
 
+**Error majorant:**
+``` math
+\begin{equation}
+    \begin{split}
+        &E[u -v] = \sqrt{\int dx dy\, \sigma(x, y) \text{grad}(u(x, y) - v(x, y))\cdot \text{grad}(u(x, y) - v(x, y))}, \\
+        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) + \text{div} w(x, y)\right)^2 + \frac{1 + \beta}{\beta \sigma(x, y)}\int dx dy\,\left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)\cdot \left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)} \\
+        &C_F = 1 \big/\left(\inf_{x, y} 2\pi\sqrt{\sigma(x, y)}\right).
+    \end{split}
+\end{equation}
+```
+
 ## Diffusion equation in the L-shaped domain
 
 We consider, again, a stationary diffusion equation
@@ -82,14 +93,13 @@ where
   \end{split}
 \end{equation}
 ```
-
 **Error majorant:**
 ``` math
 \begin{equation}
     \begin{split}
-        &E[u -v] = \sqrt{\int dx dy\, \sigma(x, y) \text{grad}(u(x, y) - v(x, y))\cdot \text{grad}(u(x, y) - v(x, y))}, \\
-        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) + \text{div} w(x, y)\right)^2 + \frac{1 + \beta}{\beta \sigma(x, y)}\int dx dy\,\left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)\cdot \left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)} \\
-        &C_F \leq 1 \big/\left(\inf_{x, y} \sqrt{\lambda_{\min}(a_{ij}(x))}2\pi\right).
+        &E[u -v] = \sqrt{\int dx dy\left[\text{grad}(u(x, y) - v(x, y))\cdot \text{grad}(u(x, y) - v(x, y)) + \left(b(x, y)\right)^2(u(x, y) - v(x, y))^2\right]}, \\
+        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) - \left(b(x, y)\right)^2 v(x, y) + \text{div} w(x, y)\right)^2 + \frac{1 + \beta}{\beta \sigma(x, y)}\int dx dy\,\left(\text{grad} v(x, y) - w(x, y)\right)\cdot \left(\sigma(x, y) \text{grad} v(x, y) - w(x, y)\right)} \\
+        &C_F = 1 \big/2\pi.
     \end{split}
 \end{equation}
 ```
