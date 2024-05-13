@@ -163,4 +163,4 @@ if __name__ == "__main__":
     N_samples = 100
     eps = args.eps
     data = get_dataset(key, N_samples, eps)
-    
+    jnp.savez(f"mixed_diffusion_{eps}.npz", **data)
