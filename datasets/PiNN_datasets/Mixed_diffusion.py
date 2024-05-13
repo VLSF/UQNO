@@ -83,7 +83,6 @@ def get_sample(key, coords_train, weights_, coords_legendre, coords_eval):
     N_mesh = 200
     x = jnp.linspace(0, 1, N_mesh)
     coords = jnp.stack(jnp.meshgrid(x, x), 2).reshape(-1, 2)
-    a__ = a_(coords[:, 0], coords[:, 1])
     A = lambda x, y: jnp.stack([jnp.stack([a_(x, y), eps * a_(x, y)]),jnp.stack([eps * a_(x, y), a_(x, y)])]).reshape(2,2)
     A_ = vmap(A,(0,0))(coords[:, 0], coords[:, 1])
     A_min=jnp.min(jnp.linalg.eigvalsh(A_))
