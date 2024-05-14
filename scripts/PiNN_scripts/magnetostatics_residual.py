@@ -83,7 +83,7 @@ def compute_energy_norm(model, coordinates, mu, sol_x, sol_y, dx_sol_y, dy_sol_x
         curl.append(curl_)
     curl = jnp.concatenate(curl, 0)
     integrand = mu*(dx_sol_y - dy_sol_x - curl)**2
-    energy_norm = jnp.sqrt(jnp.sum(jnp.sum(weights*integrand.reshape(weights.shape[1], -1), axis=1)*weights[0]))
+    energy_norm = jnp.sqrt(jnp.sum(jnp.sum(weights*integrand.reshape(weights.shape[1], -1), axis=1)*weights[0])) / 2
     return energy_norm
 
 compute_loss_and_grads = eqx.filter_value_and_grad(compute_loss)
