@@ -104,7 +104,7 @@ def compute_upper_bound(model, coordinates, weights, rhs, a, C_F, eps, N_batch=1
         dx_y_1.append(dx_y_[1])
         y1.append(y1_)
         y2.append(y2_)
-    flux = jnp.concatenate(flux, 1)
+    flux = jnp.concatenate(flux, 0)
     dx_y = [jnp.concatenate(dx_y_0, 0), jnp.concatenate(dx_y_1, 0)]
     y1 = jnp.concatenate(y1, 0)
     y2 = jnp.concatenate(y2, 0)
@@ -226,7 +226,7 @@ if __name__ == "__main__":
     Ns_drop = args["N_drop"]
     Ns_features = args["N_features"]
     Ns_layers = args["N_layers"]
-    header = "N_batch,NN_batch,learning_rate,gamma,N_updates,N_drop,N_features,N_layers,energy_norm_mean,energy_norm_std,relative_error_mean,relative_error_std,final_loss_mean,final_loss_std,training_time,upper_bound_mean,upper_bound_std"
+    header = "N_batch,NN_batch,learning_rate,gamma,eps,N_updates,N_drop,N_features,N_layers,energy_norm_mean,energy_norm_std,relative_error_mean,relative_error_std,final_loss_mean,final_loss_std,training_time,upper_bound_mean,upper_bound_std"
     save_here = results_path + "astral.csv"
     if not os.path.isfile(save_here):
         with open(save_here, "w") as f:
@@ -317,6 +317,6 @@ if __name__ == "__main__":
                         upper_bound_mean = jnp.mean(upper_bounds)
                         upper_bound_std = jnp.sqrt(jnp.var(upper_bounds))
 
-                        res = f"\n{N_batch_x},{NN_batch},{learning_rate},{gamma},{N_updates},{N_drop},{N_features_},{N_layers},{energy_norm_mean},{energy_norm_std},{relative_error_mean},{relative_error_std},{final_loss_mean},{final_loss_std},{training_time},{upper_bound_mean},{upper_bound_std}"
+                        res = f"\n{N_batch_x},{NN_batch},{learning_rate},{gamma},{eps},{N_updates},{N_drop},{N_features_},{N_layers},{energy_norm_mean},{energy_norm_std},{relative_error_mean},{relative_error_std},{final_loss_mean},{final_loss_std},{training_time},{upper_bound_mean},{upper_bound_std}"
                         with open(save_here, "a") as f:
                             f.write(res)
