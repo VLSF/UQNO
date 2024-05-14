@@ -86,8 +86,7 @@ def get_mixed(model, x):
 def get_second(model, x):
     return grad(lambda x: grad(model, argnums=0)(x, 0)[1])(x)[1], grad(lambda x: grad(model, argnums=0)(x, 1)[0])(x)[0]
 
-def compute_loss(model, coordinates, mu, f_x, f_y):
-    C_F = 1/(2*jnp.pi)
+def compute_loss(model, coordinates, mu, f_x, f_y, C_F):
     curl = vmap(get_curl, in_axes=(None, 0))(model, coordinates)
     dxdy_E_x, dxdy_E_y = vmap(get_mixed, in_axes=(None, 0))(model, coordinates)
     d2y_E_x, d2x_E_y = vmap(get_second, in_axes=(None, 0))(model, coordinates)
@@ -95,7 +94,7 @@ def compute_loss(model, coordinates, mu, f_x, f_y):
     E_y = vmap(model, in_axes=(0, None))(coordinates, 1)
     w = vmap(model, in_axes=(0, None))(coordinates, 2)
     dw = vmap(lambda x: grad(model, argnums=0)(x, 2), in_axes=0, out_axes=1)(coordinates)
-    loss = jnp.sqrt(C_F*jnp.sum((f_x - E_x - dw[1])**2 + (f_y - E_y + dw[0])**2)) + jnp.sum((w - mu*curl)**2 / mu)
+    loss = C_F*jnp.sqrt(jnp.sum((f_x - dw[1])**2 + (f_y + dw[0])**2)) + jnp.sqrt(jnp.sum((w - mu*curl)**2 / mu))
     return loss
 
 def compute_energy_norm(model, coordinates, mu, sol_x, sol_y, dx_sol_y, dy_sol_x, weights, N_batch=20):
@@ -112,11 +111,10 @@ def compute_energy_norm(model, coordinates, mu, sol_x, sol_y, dx_sol_y, dy_sol_x
     E_y = jnp.concatenate(E_y, 0)
     curl = jnp.concatenate(curl, 0)
     integrand = mu*(dx_sol_y - dy_sol_x - curl)**2
-    energy_norm = jnp.sqrt(jnp.sum(jnp.sum(weights*integrand.reshape(weights.shape[1], -1), axis=1)*weights[0]))
+    energy_norm = jnp.sqrt(jnp.sum(jnp.sum(weights*integrand.reshape(weights.shape[1], -1), axis=1)*weights[0])) / 2
     return energy_norm
 
-def compute_upper_bound(model, coordinates, mu, f_x, f_y, weights, N_batch=20):
-    C_F = 1/(2*jnp.pi)
+def compute_upper_bound(model, coordinates, mu, f_x, f_y, weights, C_F, N_batch=20):
     coordinates = coordinates.reshape(N_batch, -1, 2)
     curl, E_x, E_y, dxdy_E_x, dxdy_E_y, d2y_E_x, d2x_E_y, w, dw = [], [], [], [], [], [], [], [], []
     for i in range(N_batch):
@@ -145,20 +143,20 @@ def compute_upper_bound(model, coordinates, mu, f_x, f_y, weights, N_batch=20):
     d2x_E_y = jnp.concatenate(d2x_E_y, 0)
     w = jnp.concatenate(w, 0)
     dw = jnp.concatenate(dw, 1)
-    integrand_1 = C_F * ((f_x - E_x - dw[1])**2 + (f_y - E_y + dw[0])**2)
+    integrand_1 = ((f_x - dw[1])**2 + (f_y + dw[0])**2)
     integrand_2 = (w - mu*curl)**2 / mu
-    upper_bound = jnp.sqrt(jnp.sum(jnp.sum(weights*integrand_1.reshape(weights.shape[1], -1), axis=1)*weights[0]))
-    upper_bound += jnp.sqrt(jnp.sum(jnp.sum(weights*integrand_2.reshape(weights.shape[1], -1), axis=1)*weights[0]))
+    upper_bound = C_F * jnp.sqrt(jnp.sum(jnp.sum(weights*integrand_1.reshape(weights.shape[1], -1), axis=1)*weights[0])) / 2
+    upper_bound += jnp.sqrt(jnp.sum(jnp.sum(weights*integrand_2.reshape(weights.shape[1], -1), axis=1)*weights[0])) / 2
     return upper_bound
 
 compute_loss_and_grads = eqx.filter_value_and_grad(compute_loss)
 
 def make_step_scan(carry, ind, optim):
-    model, coordinates, mu, f_x, f_y, opt_state = carry
-    loss, grads = vmap(compute_loss_and_grads, in_axes=(0, None, 0, 0, 0))(model, coordinates[ind], mu[:, ind], f_x[:, ind], f_y[:, ind])
+    model, coordinates, mu, f_x, f_y, C_F, opt_state = carry
+    loss, grads = vmap(compute_loss_and_grads, in_axes=(0, None, 0, 0, 0, 0))(model, coordinates[ind], mu[:, ind], f_x[:, ind], f_y[:, ind], C_F)
     updates, opt_state = optim.update(grads, opt_state, eqx.filter(model, eqx.is_array))
     model = eqx.apply_updates(model, updates)
-    return [model, coordinates, mu, f_x, f_y, opt_state], loss
+    return [model, coordinates, mu, f_x, f_y, C_F, opt_state], loss
 
 def get_argparser():
     parser = argparse.ArgumentParser()
@@ -260,6 +258,7 @@ if __name__ == "__main__":
     weights_ = data["weights"]
     coords_legendre = data["coords_legendre"]
     coords_eval = data["coords_eval"]
+    C_F = 1 / (2*jnp.pi*jnp.sqrt(jnp.min(mu_legendre, axis=1)))
     
     key = random.PRNGKey(23)
     keys = random.split(key, 2)
@@ -281,7 +280,7 @@ if __name__ == "__main__":
                         optim = optax.lion(learning_rate=sc)
                         opt_state = optim.init(eqx.filter(model, eqx.is_array))
 
-                        carry = [model, coords_train, mu_train[:NN_batch], f_x_train[:NN_batch], f_y_train[:NN_batch], opt_state]
+                        carry = [model, coords_train, mu_train[:NN_batch], f_x_train[:NN_batch], f_y_train[:NN_batch], C_F[:NN_batch], opt_state]
 
                         make_step_scan_ = lambda a, b: make_step_scan(a, b, optim)
 
@@ -307,7 +306,7 @@ if __name__ == "__main__":
                         errors_y = jnp.linalg.norm(sol_y_eval[:NN_batch] - prediction_y, axis=1) / jnp.linalg.norm(sol_y_eval[:NN_batch], axis=1)
 
                         energy_norms = vmap(compute_energy_norm, in_axes=(0, None, 0, 0, 0, 0, 0, None))(model, coords_legendre, mu_legendre[:NN_batch], sol_x_legendre[:NN_batch], sol_y_legendre[:NN_batch], dx_sol_y_legendre[:NN_batch], dy_sol_x_legendre[:NN_batch], weights_)
-                        upper_bounds = vmap(compute_upper_bound, in_axes=(0, None, 0, 0, 0, None))(model, coords_legendre, mu_legendre[:NN_batch], f_x_legendre[:NN_batch], f_y_legendre[:NN_batch], weights_)
+                        upper_bounds = vmap(compute_upper_bound, in_axes=(0, None, 0, 0, 0, None, 0))(model, coords_legendre, mu_legendre[:NN_batch], f_x_legendre[:NN_batch], f_y_legendre[:NN_batch], weights_, C_F[:NN_batch])
 
 
                         final_loss_mean = jnp.mean(loss, 1)[-1]
