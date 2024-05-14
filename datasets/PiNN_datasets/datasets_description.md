@@ -277,7 +277,7 @@ From [Functional a posteriori estimates for Maxwell’s equation](https://link.s
 
 ```math
 \begin{equation}
-    E[u - v] \leq \frac{1}{2\pi}\left\|f(x, y) - \text{curl}\,w(x, y)\right\|_2 + \left\|\frac{1}{\sqrt{\mu(x, y)}}\left(w(x, y) - \mu(x, y)\,\text{curl}\,v(x, y)\right)\right\|_2,
+    E[u - v] \leq \frac{1}{2\pi \inf \mu}\left\|f(x, y) - \text{curl}\,w(x, y)\right\|_2 + \left\|\frac{1}{\sqrt{\mu(x, y)}}\left(w(x, y) - \mu(x, y)\,\text{curl}\,v(x, y)\right)\right\|_2,
 \end{equation}
 ```
 where energy norm reads
