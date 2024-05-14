@@ -80,6 +80,9 @@ class PiNN3(eqx.Module):
 def get_curl(model, x):
     return grad(model, argnums=0)(x, 1)[0] - grad(model, argnums=0)(x, 0)[1]
 
+def get_div(model, x):
+    return grad(model, argnums=0)(x, 0)[0] + grad(model, argnums=0)(x, 1)[1]
+
 def get_mixed(model, x):
     return grad(lambda x: grad(model, argnums=0)(x, 0)[1])(x)[0], grad(lambda x: grad(model, argnums=0)(x, 1)[0])(x)[1]
 
@@ -88,13 +91,10 @@ def get_second(model, x):
 
 def compute_loss(model, coordinates, mu, f_x, f_y, C_F):
     curl = vmap(get_curl, in_axes=(None, 0))(model, coordinates)
-    dxdy_E_x, dxdy_E_y = vmap(get_mixed, in_axes=(None, 0))(model, coordinates)
-    d2y_E_x, d2x_E_y = vmap(get_second, in_axes=(None, 0))(model, coordinates)
-    E_x = vmap(model, in_axes=(0, None))(coordinates, 0)
-    E_y = vmap(model, in_axes=(0, None))(coordinates, 1)
-    w = vmap(model, in_axes=(0, None))(coordinates, 2)
     dw = vmap(lambda x: grad(model, argnums=0)(x, 2), in_axes=0, out_axes=1)(coordinates)
-    loss = C_F*jnp.sqrt(jnp.sum((f_x - dw[1])**2 + (f_y + dw[0])**2)) + jnp.sqrt(jnp.sum((w - mu*curl)**2 / mu))
+    w = vmap(model, in_axes=(0, None))(coordinates, 2)
+    div = vmap(get_div, in_axes=(None, 0))(model, coordinates)
+    loss = C_F*jnp.sqrt(jnp.sum((f_x - dw[1])**2 + (f_y + dw[0])**2)) + jnp.sqrt(jnp.sum((w - mu*curl)**2 / mu)) + jnp.sqrt(jnp.sum(div**2))
     return loss
 
 def compute_energy_norm(model, coordinates, mu, sol_x, sol_y, dx_sol_y, dy_sol_x, weights, N_batch=20):

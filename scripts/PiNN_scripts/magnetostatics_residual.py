@@ -61,6 +61,9 @@ class PiNN2(eqx.Module):
 def get_curl(model, x):
     return grad(model, argnums=0)(x, 1)[0] - grad(model, argnums=0)(x, 0)[1]
 
+def get_div(model, x):
+    return grad(model, argnums=0)(x, 0)[0] + grad(model, argnums=0)(x, 1)[1]
+
 def get_mixed(model, x):
     return grad(lambda x: grad(model, argnums=0)(x, 0)[0])(x)[1], grad(lambda x: grad(model, argnums=0)(x, 1)[0])(x)[1]
 
@@ -71,9 +74,10 @@ def compute_loss(model, coordinates, mu, dx_mu, dy_mu, f_x, f_y):
     curl = vmap(get_curl, in_axes=(None, 0))(model, coordinates)
     dxdy_E_x, dxdy_E_y = vmap(get_mixed, in_axes=(None, 0))(model, coordinates)
     d2y_E_x, d2x_E_y = vmap(get_second, in_axes=(None, 0))(model, coordinates)
+    div = vmap(get_div, in_axes=(None, 0))(model, coordinates)
     lx = dy_mu*curl + mu*(dxdy_E_y - d2y_E_x) - f_x
     ly = -dx_mu*curl - mu*(d2x_E_y - dxdy_E_x) - f_y
-    return jnp.linalg.norm(lx) + jnp.linalg.norm(ly)
+    return jnp.linalg.norm(lx) + jnp.linalg.norm(ly) + jnp.linalg.norm(div)
 
 def compute_energy_norm(model, coordinates, mu, sol_x, sol_y, dx_sol_y, dy_sol_x, weights, N_batch=20):
     coordinates = coordinates.reshape(N_batch, -1, 2)
