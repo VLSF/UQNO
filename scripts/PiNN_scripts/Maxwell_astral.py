@@ -111,7 +111,7 @@ def compute_energy_norm(model, coordinates, mu, sol_x, sol_y, dx_sol_y, dy_sol_x
     E_y = jnp.concatenate(E_y, 0)
     curl = jnp.concatenate(curl, 0)
     integrand = mu*(dx_sol_y - dy_sol_x - curl)**2 + (E_x - sol_x)**2 + (E_y - sol_y)**2
-    energy_norm = jnp.sqrt(jnp.sum(jnp.sum(weights*integrand.reshape(weights.shape[1], -1), axis=1)*weights[0]))
+    energy_norm = jnp.sqrt(jnp.sum(jnp.sum(weights*integrand.reshape(weights.shape[1], -1), axis=1)*weights[0])) / 2
     return energy_norm
 
 def compute_upper_bound(model, coordinates, mu, f_x, f_y, weights, N_batch=20):
@@ -144,7 +144,7 @@ def compute_upper_bound(model, coordinates, mu, f_x, f_y, weights, N_batch=20):
     w = jnp.concatenate(w, 0)
     dw = jnp.concatenate(dw, 1)
     integrand = (f_x - E_x - dw[1])**2 + (f_y - E_y + dw[0])**2 + (w - mu*curl)**2 / mu
-    upper_bound = jnp.sqrt(jnp.sum(jnp.sum(weights*integrand.reshape(weights.shape[1], -1), axis=1)*weights[0]))
+    upper_bound = jnp.sqrt(jnp.sum(jnp.sum(weights*integrand.reshape(weights.shape[1], -1), axis=1)*weights[0])) / 2
     return upper_bound
 
 compute_loss_and_grads = eqx.filter_value_and_grad(compute_loss)
