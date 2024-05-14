@@ -52,17 +52,16 @@ def compute_loss(model, coordinates, a, dx_a, dy_a, rhs, eps):
     return jnp.linalg.norm(
         dx_a * flux[0] + dy_a * flux[1] + a * laplacian + eps * (dx_a * flux[1] + dy_a * flux[0] + 2 * a * mixed) + rhs)
 
-
 @jit
-def compute_error_energy_norm(model, coordinates, a, dx_sol, dy_sol, weights, eps, N_batch=10):
+def compute_error_energy_norm(model, coordinates, a, dx_sol, dy_sol, eps, weights, N_batch=10):
     flux_ = []
     coordinates = coordinates.reshape(N_batch, -1, 2)
     for i in range(N_batch):
-        flux = vmap(get_flux, in_axes=(None, 0), out_axes=1)(model, coordinates)
+        flux = vmap(get_flux, in_axes=(None, 0), out_axes=1)(model, coordinates[i])
         flux_.append(flux)
     flux = jnp.concatenate(flux_, 1)
-    integrand = a * ((flux[0] - dx_sol) ** 2 + a* (flux[1] - dy_sol) ** 2)+2*eps*a*(flux[0] - dx_sol)*(flux[1] - dy_sol)
-    l = jnp.sum(jnp.sum(integrand.reshape(weights.size, weights.size) * weights, axis=1) * weights[0]) / 4
+    integrand = a * ((flux[0] - dx_sol)**2 + eps**2*(flux[1] - dy_sol)**2)
+    l = jnp.sum(jnp.sum(integrand.reshape(weights.size, weights.size)*weights, axis=1) * weights[0]) / 4
     return l
 
 compute_loss_and_grads = eqx.filter_value_and_grad(compute_loss)
@@ -207,7 +206,6 @@ if __name__ == "__main__":
                                  rhs_train[:NN_batch], eps, opt_state]
 
                         make_step_scan_ = lambda a, b: make_step_scan(a, b, optim)
-
                         start = time.time()
                         carry, loss = scan(make_step_scan_, carry, inds)
                         stop = time.time()

@@ -70,19 +70,24 @@ class PiNN3(eqx.Module):
 def get_flux(model, x, i):
     return grad(model, argnums=0)(x, i)
 
+
 def compute_loss(model, coordinates, rhs, a, C_F, eps):
     flux = vmap(grad(lambda x: model(x, 2), argnums=0), in_axes=0)(coordinates)
     dx_y = [vmap(grad(lambda x: model(x, i), argnums=0), in_axes=0)(coordinates)[:, i] for i in [0, 1]]
     y1 = vmap(model, in_axes=(0, None))(coordinates, 0)
     y2 = vmap(model, in_axes=(0, None))(coordinates, 1)
-    y=jnp.stack([y1,y2],1)
-    matrix_a1=jnp.stack([a,eps*a],1)
-    matrix_a2=jnp.stack([eps*a,a],1)
-    matrix_a=jnp.stack([matrix_a1,matrix_a2],2)
-    inv_a=jnp.linalg.inv(matrix_a)
-    aflux=vmap(jnp.matmul,(0,0))(matrix_a,flux)
-    loss = (1 + model.beta[0] ** 2) * (C_F ** 2 * (rhs + dx_y[0] + dx_y[1]) ** 2 + (vmap(jnp.dot,(0,0))(vmap(jnp.matmul,(0,0))(inv_a,aflux-y),aflux-y)) / (
-                                                   model.beta[0] ** 2))
+    y = jnp.stack([y1, y2], 1)
+    matrix_a1 = jnp.stack([a, eps * a], 1)
+    matrix_a2 = jnp.stack([eps * a, a], 1)
+    matrix_a = jnp.stack([matrix_a1, matrix_a2], 2)
+    dom = -eps ** 2 * a + a
+    inv_a1 = jnp.stack([1/dom, -eps/dom], 1)
+    inv_a2 = jnp.stack([-eps/dom, 1/dom], 1)
+    inv_a = jnp.stack([inv_a1, inv_a2], 2)
+    aflux = vmap(jnp.matmul, (0, 0))(matrix_a, flux)
+    loss = (1 + model.beta[0] ** 2) * (C_F ** 2 * (rhs + dx_y[0] + dx_y[1]) ** 2 + (
+        vmap(jnp.dot, (0, 0))(vmap(jnp.matmul, (0, 0))(inv_a, aflux - y), aflux - y)) / (
+                                               model.beta[0] ** 2))
     return jnp.linalg.norm(loss)
 
 
@@ -104,18 +109,22 @@ def compute_upper_bound(model, coordinates, weights, rhs, a, C_F, eps, N_batch=1
         dx_y_1.append(dx_y_[1])
         y1.append(y1_)
         y2.append(y2_)
-    flux = jnp.concatenate(flux, 0)
+    flux = jnp.concatenate(flux, 1).T
     dx_y = [jnp.concatenate(dx_y_0, 0), jnp.concatenate(dx_y_1, 0)]
     y1 = jnp.concatenate(y1, 0)
     y2 = jnp.concatenate(y2, 0)
-    y=jnp.stack([y1,y2],1)
-    matrix_a1=jnp.stack([a,eps*a],1)
-    matrix_a2=jnp.stack([eps*a,a],1)
-    matrix_a=jnp.stack([matrix_a1,matrix_a2],2)
-    inv_a=jnp.linalg.inv(matrix_a)
-    aflux=vmap(jnp.matmul,(0,0))(matrix_a,flux)
-    integrand = (1 + model.beta[0] ** 2) * (C_F ** 2 * (rhs + dx_y[0] + dx_y[1]) ** 2 + (vmap(jnp.dot,(0,0))(vmap(jnp.matmul,(0,0))(inv_a,aflux-y),aflux-y)) / (
-                                                   model.beta[0] ** 2))
+    y = jnp.stack([y1, y2], 1)
+    matrix_a1 = jnp.stack([a, eps * a], 1)
+    matrix_a2 = jnp.stack([eps * a, a], 1)
+    matrix_a = jnp.stack([matrix_a1, matrix_a2], 2)
+    dom = -eps ** 2 * a + a
+    inv_a1 = jnp.stack([1/dom, -eps/dom], 1)
+    inv_a2 = jnp.stack([-eps/dom, 1/dom], 1)
+    inv_a = jnp.stack([inv_a1, inv_a2], 2)
+    aflux = vmap(jnp.matmul, (0, 0))(matrix_a, flux)
+    integrand = (1 + model.beta[0] ** 2) * (C_F ** 2 * (rhs + dx_y[0] + dx_y[1]) ** 2 + (
+        vmap(jnp.dot, (0, 0))(vmap(jnp.matmul, (0, 0))(inv_a, aflux - y), aflux - y)) / (
+                                                    model.beta[0] ** 2))
     l = jnp.sum(jnp.sum(integrand.reshape(weights.size, weights.size) * weights, axis=1) * weights[0]) / 4
     return l
 
@@ -128,7 +137,8 @@ def compute_error_energy_norm(model, coordinates, a, dx_sol, dy_sol, weights, ep
         flux = vmap(get_flux, in_axes=(None, 0, None), out_axes=1)(model, coordinates[i], 2)
         flux_.append(flux)
     flux = jnp.concatenate(flux_, 1)
-    integrand = a * ((flux[0] - dx_sol) ** 2 + a* (flux[1] - dy_sol) ** 2)+2*eps*a*(flux[0] - dx_sol)*(flux[1] - dy_sol)
+    integrand = a * ((flux[0] - dx_sol) ** 2 + a * (flux[1] - dy_sol) ** 2) + 2 * eps * a * (flux[0] - dx_sol) * (
+                flux[1] - dy_sol)
     l = jnp.sum(jnp.sum(integrand.reshape(weights.size, weights.size) * weights, axis=1) * weights[0]) / 4
     return l
 
@@ -274,7 +284,6 @@ if __name__ == "__main__":
                                  opt_state]
 
                         make_step_scan_ = lambda a, b: make_step_scan(a, b, optim)
-
                         start = time.time()
                         carry, loss = scan(make_step_scan_, carry, inds)
                         stop = time.time()
