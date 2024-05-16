@@ -320,8 +320,8 @@ This parameter is also used to generate exact solution
         &C_F = 1 \big/\left(2\pi \inf_{x, y} \sqrt{\lambda_{min}\{\Sigma(x, y)\}}\right) \\
 &\Sigma(x, y)=\left[
  \begin{matrix}
-   \sigma(x,y), & \epsilon\sigma(x,y) \\
-   \epsilon\sigma(x,y), & \sigma(x,y) 
+   \sigma(x,y) & \epsilon\sigma(x,y) \\
+   \epsilon\sigma(x,y) & \sigma(x,y) 
   \end{matrix}
   \right].
     \end{split}
