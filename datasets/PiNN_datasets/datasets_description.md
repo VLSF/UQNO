@@ -289,11 +289,35 @@ where energy norm reads
 ```
 and $\text{curl}\,w(x, y) = e_x\partial_y w(x, y)-e_y\partial_{x} w(x, y)$ and $\text{curl}\,v(x, y) = \partial_x v_{y}(x, y) - \partial_y v_{x}(x, y)$, so we have a single scalar field $w(x, y)$ as certificate.
 
-**Mixed diffusion equation**
+## Mixed diffusion equation
 
 For $D_x=2$ mixed diffusion equation reads:
-```math
+``` math
 \begin{equation}
-— d/dx a(x, y) d/ dx phi(x, y) — d/dy a(x, y) d/ dy phi(x, y) — eps * (d/dy a(x, y) d/ dx phi(x, y) + d/dx a(x, y) d/ dy phi(x, y) ) = f(x, y)
+  \begin{split}
+    -&\frac{\partial}{\partial x}\left(\sigma(x, y) \frac{\partial u(x, y)}{\partial x}\right) - \frac{\partial}{\partial y}\left(\sigma(x, y) \frac{\partial u(x, y)}{\partial y}\right) - \frac{\partial}{\partial x}\left(\sigma(x, y) \frac{\partial u(x, y)}{\partial y}\right)-\frac{\partial}{\partial y}\left(\sigma(x, y) \frac{\partial u(x, y)}{\partial x}\right)= f(x, y),\\
+    &u(x, 0) = u(x, 1) = u(0, y) = u(1, y) = 0,\\
+    &x, y\in(0, 1)\times(0, 1),
+  \end{split}
 \end{equation}
-```math
+```
+This parameter is also used to generate exact solution
+``` math
+\begin{equation}
+  \begin{split}
+      &\sigma = \frac{z - \min z}{\max z - \min z}, z\sim \mathcal{N}\left(0, \left(I - c\Delta\right)^{-k}\right);\\
+      &u = v\sin(\pi x)\sin(\pi y), v \sim \mathcal{N}\left(0, \left(I - c\left(\partial_x^2 + \epsilon^2\partial_y^2\right)\right)^{-k}\right),
+  \end{split}
+\end{equation}
+```
+**Error majorant:**
+
+``` math
+\begin{equation}
+    \begin{split}
+        &E[u -v] = \sqrt{\int dx dy\, \sigma(x, y) \text{grad}\,(u(x, y) - v(x, y))\cdot \text{grad}\,(u(x, y) - v(x, y))}, \\
+        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) + \text{div}\,w(x, y)\right)^2 + \frac{1 + \beta}{\beta \sigma(x, y)}\int dx dy\,\left(\left(\sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)_x^2 + \left(\epsilon^2\sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)_x^2 \big/ \epsilon^2\right)} \\
+        &C_F = 1 \big/\left(2\pi \min\left\{1, \epsilon^2\right\}\inf_{x, y} \sqrt{\Sigma(x, y)}\right).
+    \end{split}
+\end{equation}
+```
