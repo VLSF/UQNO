@@ -317,11 +317,11 @@ This parameter is also used to generate exact solution
     \begin{split}
         &E[u -v] = \sqrt{\int dx dy\, \sigma(x, y) \text{grad}\,(u(x, y) - v(x, y))\cdot \text{grad}\,(u(x, y) - v(x, y))}, \\
         &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) + \text{div}\,w(x, y)\right)^2 + \frac{1 + \beta}{\beta \sigma(x, y)}\int dx dy\,\left(\left(\sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)_x^2 + \left(\epsilon^2\sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)_x^2 \big/ \epsilon^2\right)} \\
-        &C_F = 1 \big/\left(2\pi \min\left\{1, \epsilon^2\right\}\inf_{x, y} \sqrt{\Sigma(x, y)}\right) \\
+        &C_F = 1 \big/\left(2\pi \inf_{x, y} \sqrt{\lambda_min\left{\Sigma(x, y)\right}}\right) \\
 &\Sigma(x, y)=\left[
  \begin{matrix}
-   \sigma(x,y) & \epsilon\sigma(x,y) \\
-   \epsilon\sigma(x,y) & \sigma(x,y) 
+   \sigma(x,y), & \epsilon\sigma(x,y) \\
+   \epsilon\sigma(x,y), & \sigma(x,y) 
   \end{matrix}
   \right].
     \end{split}
