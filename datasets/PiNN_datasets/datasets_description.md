@@ -9,6 +9,7 @@ Scripts used for dataset generation:
 4. [Maxwell's equation](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/Maxwell.py)
 5. [Anisotropic diffusion equation](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/Anisotropic_diffusion.py)
 6. [Magnetostatics](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/magnetostatics.py)
+7. [Mixed diffusion equation](https://github.com/VLSF/UQNO/blob/main/datasets/PiNN_datasets/Mixed_diffusion.py)
 
 Datasets are available for download:
 1. [Diffusion equation](https://disk.yandex.ru/d/ofuDDtCXYDiDpg)
@@ -287,3 +288,12 @@ where energy norm reads
 \end{equation}
 ```
 and $\text{curl}\,w(x, y) = e_x\partial_y w(x, y)-e_y\partial_{x} w(x, y)$ and $\text{curl}\,v(x, y) = \partial_x v_{y}(x, y) - \partial_y v_{x}(x, y)$, so we have a single scalar field $w(x, y)$ as certificate.
+
+**Mixed diffusion equation**
+
+For $D_x=2$ mixed diffusion equation reads:
+```math
+\begin{equation}
+— d/dx a(x, y) d/ dx phi(x, y) — d/dy a(x, y) d/ dy phi(x, y) — eps * (d/dy a(x, y) d/ dx phi(x, y) + d/dx a(x, y) d/ dy phi(x, y) ) = f(x, y)
+\end{equation}
+```math
