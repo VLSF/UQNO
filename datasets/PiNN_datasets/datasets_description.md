@@ -18,6 +18,7 @@ Datasets are available for download:
 4. [Maxwell's equation](https://disk.yandex.ru/d/VsS0MrxlSPvl4g)
 5. Anisotropic diffusion equation: [eps = 5](https://disk.yandex.ru/d/NFWX3gKxD1rtQQ), [eps = 10](https://disk.yandex.ru/d/YMh9PwMqT-r57Q), [eps = 15](https://disk.yandex.ru/d/s127Q9V_P0c4Mg), [eps = 20](https://disk.yandex.ru/d/Ye8aXLLiF2ZsfA)
 6. [Magnetostatics](https://disk.yandex.ru/d/SPjPMYnB2nL1GQ)
+7. Diffusion equation with mixed derivative: [eps = 0.5](https://disk.yandex.ru/d/TPwl7iyr8NqbUA), [eps = 0.7](https://disk.yandex.ru/d/gTFfZmIa9bfK-Q), [eps = 0.9](https://disk.yandex.ru/d/qus8rqEfNSQlHA), [eps = 0.99](https://disk.yandex.ru/d/tiIobWRnNsKn3w)
 
 One can download from GoogleColab / Jupyter Notebook using the following script
 
@@ -315,8 +316,9 @@ This parameter is also used to generate exact solution
 ``` math
 \begin{equation}
     \begin{split}
-        &E[u -v] = \sqrt{\int dx dy\, \sigma(x, y) \text{grad}\,(u(x, y) - v(x, y))\cdot \text{grad}\,(u(x, y) - v(x, y))}, \\
-        &E[u -v] \leq \sqrt{C_F^2(1+\beta) \int dx dy\,\left(f(x, y) + \text{div}\,w(x, y)\right)^2 ++ \frac{1 + \beta}{\beta}\Sigma^{-1}(x, y)\int dx dy\,\left(\left(\Sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)_x^2 + \left(\Sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)_x^2 \right)}\\
+        &E[u -v] = \sqrt{\int dx dy\, \sigma(x, y) \left((\partial_xu(x, y) - \partial_xv(x, y))^2 + (\partial_yu(x, y) - \partial_yv(x, y))^2\right) + 2\epsilon (\partial_yu(x, y) - \partial_yv(x, y))\left((\partial_xu(x, y) - \partial_xv(x, y))\right)}, \\
+        &E[u -v]^2 \leq C_F^2(1+\beta) \int dx dy\,\left(f(x, y) + \text{div}\,w(x, y)\right)^2 +\frac{1 + \beta}{\beta}\int \frac{dx dy}{\sigma(x,y)\left(1 - \epsilon^2\right)}\left(\left(\Sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)_x^2 + \left(\Sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)_y^2\right) \\
+        &- \frac{1 + \beta}{\beta}\int \frac{dx dy}{\sigma(x,y)(1 - \epsilon^2)}\left(2\epsilon \left(\Sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)_x\left(\Sigma(x, y) \text{grad}\,v(x, y) - w(x, y)\right)_y\right)\\
         &C_F = 1 \big/\left(2\pi \inf_{x, y} \sqrt{\lambda_{min}\{\Sigma(x, y)\}}\right) \\
 &\Sigma(x, y)=\left[
  \begin{matrix}
@@ -326,4 +328,3 @@ This parameter is also used to generate exact solution
   \right].
     \end{split}
 \end{equation}
-```
